@@ -33,20 +33,31 @@ async function run() {
             const cursor = productCollection.find(query);
             const vaccine = await cursor.toArray();
             res.send(vaccine);
-
-
-
-            app.get("/item/:id", async (req, res) => {
-                const id = req.params.id;
-                const query = { _id: ObjectId(id) };
-                const vaccine = await productCollection.findOne(query);
-                res.send(vaccine);
-                console.log
-            });
-
-
-
         });
+
+
+        app.get("/item/:id", async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const vaccine = await productCollection.findOne(query);
+            res.send(vaccine);
+            console.log
+        });
+        app.post("/item", async (req, res) => {
+            const newVaccine = req.body;
+            const result = await productCollection.insertOne(newVaccine);
+            res.send(result);
+        });
+
+        // delete Api
+        app.delete("/item/:id", async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await productCollection.deleteOne(query);
+            res.send(result);
+        });
+
+
 
 
 
