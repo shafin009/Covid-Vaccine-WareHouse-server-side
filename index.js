@@ -41,7 +41,7 @@ async function run() {
             const query = { _id: ObjectId(id) };
             const vaccine = await productCollection.findOne(query);
             res.send(vaccine);
-            console.log
+
         });
         app.post("/item", async (req, res) => {
             const newVaccine = req.body;
@@ -58,6 +58,39 @@ async function run() {
         });
 
 
+        app.get("/myitem", async (req, res) => {
+            const email = req.query.email;
+            const query = { email: email };
+            const cursor = productCollection.find(query);
+            const vaccine = await cursor.toArray();
+            res.send(vaccine);
+        });
+
+        app.post("/myitem", async (req, res) => {
+            const newItem = req.body;
+            const result = await productCollection.insertOne(newItem);
+            res.send(result);
+
+        });
+
+        // update user
+        app.put("/item/:id", async (req, res) => {
+            const id = req.params.id;
+            const updateVaccine = req.body;
+            const filter = { _id: ObjectId(id) };
+            const options = { upsert: true };
+            const updateData = {
+                $set: {
+                    quantity: updateVaccine.quantity,
+                },
+            };
+            const result = await productCollection.updateOne(
+                filter,
+                updateData,
+                options
+            );
+            res.send(result);
+        });
 
 
 
