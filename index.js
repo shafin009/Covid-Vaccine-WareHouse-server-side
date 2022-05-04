@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const jwt = require('jsonwebtoken');
 const { ObjectId } = require('mongodb');
 const app = express();
 var MongoClient = require('mongodb').MongoClient;
@@ -24,13 +25,25 @@ async function run() {
     try {
 
         await client.connect();
-        const productCollection = client.db("vaccine").collection("item");
-        // Get API
+        const vaccineCollection = client.db("vaccine").collection("item");
 
+
+        app.post('/login', async (req, res) => {
+            const user = req.body
+            const tokenAccess = jwt.sign(user, process.env.JWT_TOKEN, {
+                expiresIn: '2d'
+            });
+            res.send({ tokenAccess });
+
+        });
+
+
+
+        // Get API
         app.get("/item", async (req, res) => {
 
             const query = {};
-            const cursor = productCollection.find(query);
+            const cursor = vaccineCollection.find(query);
             const vaccine = await cursor.toArray();
             res.send(vaccine);
         });
@@ -39,13 +52,13 @@ async function run() {
         app.get("/item/:id", async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
-            const vaccine = await productCollection.findOne(query);
+            const vaccine = await vaccineCollection.findOne(query);
             res.send(vaccine);
 
         });
         app.post("/item", async (req, res) => {
             const newVaccine = req.body;
-            const result = await productCollection.insertOne(newVaccine);
+            const result = await vaccineCollection.insertOne(newVaccine);
             res.send(result);
         });
 
@@ -53,7 +66,7 @@ async function run() {
         app.delete("/item/:id", async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
-            const result = await productCollection.deleteOne(query);
+            const result = await vaccineCollection.deleteOne(query);
             res.send(result);
         });
 
@@ -61,14 +74,14 @@ async function run() {
         app.get("/myitem", async (req, res) => {
             const email = req.query.email;
             const query = { email: email };
-            const cursor = productCollection.find(query);
+            const cursor = vaccineCollection.find(query);
             const vaccine = await cursor.toArray();
             res.send(vaccine);
         });
 
         app.post("/myitem", async (req, res) => {
             const newItem = req.body;
-            const result = await productCollection.insertOne(newItem);
+            const result = await vaccineCollection.insertOne(newItem);
             res.send(result);
 
         });
@@ -84,7 +97,7 @@ async function run() {
                     quantity: updateVaccine.quantity,
                 },
             };
-            const result = await productCollection.updateOne(
+            const result = await vaccineCollection.updateOne(
                 filter,
                 updateData,
                 options
