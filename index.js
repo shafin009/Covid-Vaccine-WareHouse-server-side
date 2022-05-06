@@ -23,11 +23,12 @@ function token(req, res, next) {
     jwt.verify(jwtToken, process.env.JWT_TOKEN, (err, decoded) => {
 
         if (err) {
-            return res.status(403).send({ message: "Sorry! Wrong Access" });
+            return res.status(403).send({ message: "Sorry! Forbidden Access" });
         }
         req.decoded = decoded;
+        next()
     })
-    next()
+
 }
 
 
@@ -86,7 +87,7 @@ async function run() {
         });
 
 
-        
+
         //------------my Item with JWT---------
         app.get("/myitem", token, async (req, res) => {
             const emailDecoded = req.decoded.email;
@@ -98,7 +99,7 @@ async function run() {
                 res.send(vaccine);
             }
             else {
-                return res.status(403).send({ message: "Sorry! Wrong Access, Goodbye!" });
+                return res.status(403).send({ message: "Sorry! Forbidden Access" });
             }
         });
 
