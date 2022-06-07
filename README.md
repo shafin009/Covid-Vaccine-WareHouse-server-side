@@ -13,4 +13,8 @@ A Beautiful Navbar, Carousel, Vaccine Inventory & wonderful Footer section,also 
 
 
 In this Project I used---
-⚫Installed React-Router-Dom. ⚫Installed Firebase. ⚫Installed Json Web Token. ⚫Installed Tailwind & Bootstrap Framework. ⚫Used MongoDB & Node.js for Server side DataBase.
+<br/>
+
+⚫Firebase.
+⚫Json Web Token.
+⚫Tailwind & Bootstrap Framework.
